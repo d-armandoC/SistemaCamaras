@@ -185,8 +185,8 @@ public class Principal extends javax.swing.JFrame {
         hilo_initCamara = new Thread() {
             public void run() {
 
-                 //CvCapture capture = opencv_highgui.cvCreateCameraCapture(0);
-               CvCapture capture = opencv_highgui.cvCreateFileCapture("rtsp://admin:12345@192.168.10.150:554//Streaming/Channels/1");
+                //       CvCapture capture = opencv_highgui.cvCreateCameraCapture(0);
+                CvCapture capture = opencv_highgui.cvCreateFileCapture("rtsp://admin:12345@192.168.10.150:554//Streaming/Channels/1");
                 //  opencv_highgui.cvSetCaptureProperty(capture, opencv_highgui.CV_CAP_PROP_FRAME_HEIGHT, 300);
                 // opencv_highgui.cvSetCaptureProperty(capture, opencv_highgui.CV_CAP_PROP_FRAME_WIDTH, 200);
                 grabbedImage = opencv_highgui.cvQueryFrame(capture);
@@ -234,13 +234,13 @@ public class Principal extends javax.swing.JFrame {
                     Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
                     jlimg.setIcon(icono);
 
-                    try {
-                        String result = instance.doOCR(img_temporal.getBufferedImage());
-                        jlplaca.setText(result);
-                        System.out.println(result);
-                    } catch (TesseractException e) {
-                        System.err.println(e.getMessage());
-                    }
+//                    try {
+//                        String result = instance.doOCR(img_temporal.getBufferedImage());
+//                        jlplaca.setText(result);
+//                        System.out.println(result);
+//                    } catch (TesseractException e) {
+//                        System.err.println(e.getMessage());
+//                    }
 
                     String nombre_img;
                     if (guardar == true) {
@@ -267,7 +267,14 @@ public class Principal extends javax.swing.JFrame {
                     } catch (InterruptedException ex) {
 
                     }
-
+                      String   recognizedText="null";
+                    try {
+                        recognizedText = Main.systemLogic.recognize(new CarSnapshot(grabbedImage.getBufferedImage()));
+                    } catch (Exception ex) {
+                        recognitionLabel2.setText("error");
+                        return;
+                    }
+                    recognitionLabel2.setText(recognizedText);
                 }
             }
         };
@@ -335,13 +342,11 @@ public class Principal extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         fileList = new javax.swing.JList();
+        recognitionLabel2 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         imageMenu = new javax.swing.JMenu();
         openDirectoryItem = new javax.swing.JMenuItem();
         exitItem = new javax.swing.JMenuItem();
-        helpMenu = new javax.swing.JMenu();
-        aboutItem = new javax.swing.JMenuItem();
-        helpItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -397,18 +402,17 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        recognitionLabel.setBackground(new java.awt.Color(0, 0, 0));
-        recognitionLabel.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        recognitionLabel.setForeground(new java.awt.Color(255, 204, 51));
+        recognitionLabel.setBackground(new java.awt.Color(255, 255, 255));
+        recognitionLabel.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         recognitionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        recognitionLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        recognitionLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         recognitionLabel.setOpaque(true);
 
         jLabel2.setText("VIDEO ACTUAL");
 
         jLabel3.setText("CAPTURA SELECCIONADA");
 
-        fileList.setBackground(javax.swing.UIManager.getDefaults().getColor("Panel.background"));
+        fileList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         fileList.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         fileList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -417,13 +421,18 @@ public class Principal extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(fileList);
 
+        recognitionLabel2.setBackground(new java.awt.Color(255, 255, 255));
+        recognitionLabel2.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        recognitionLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        recognitionLabel2.setOpaque(true);
+
         menuBar.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
 
-        imageMenu.setText("Image");
+        imageMenu.setText("Opciones");
         imageMenu.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
 
         openDirectoryItem.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        openDirectoryItem.setText("Load snapshots from directory");
+        openDirectoryItem.setText("Abrir directorio de imagenes");
         openDirectoryItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openDirectoryItemActionPerformed(evt);
@@ -432,7 +441,7 @@ public class Principal extends javax.swing.JFrame {
         imageMenu.add(openDirectoryItem);
 
         exitItem.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        exitItem.setText("Exit");
+        exitItem.setText("Salir");
         exitItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitItemActionPerformed(evt);
@@ -441,34 +450,6 @@ public class Principal extends javax.swing.JFrame {
         imageMenu.add(exitItem);
 
         menuBar.add(imageMenu);
-
-        helpMenu.setText("Help");
-        helpMenu.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        helpMenu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                helpMenuActionPerformed(evt);
-            }
-        });
-
-        aboutItem.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        aboutItem.setText("About");
-        aboutItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aboutItemActionPerformed(evt);
-            }
-        });
-        helpMenu.add(aboutItem);
-
-        helpItem.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        helpItem.setText("Help");
-        helpItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                helpItemActionPerformed(evt);
-            }
-        });
-        helpMenu.add(helpItem);
-
-        menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
 
@@ -492,7 +473,6 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(recognitionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -506,7 +486,11 @@ public class Principal extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jlimgselect, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(recognizeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(recognizeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(recognitionLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(recognitionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(13, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -540,7 +524,9 @@ public class Principal extends javax.swing.JFrame {
                             .addComponent(jlimg, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jlimgselect, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(13, 13, 13)
-                        .addComponent(recognitionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(recognitionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                            .addComponent(recognitionLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addComponent(recognizeButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -580,28 +566,28 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnsalirActionPerformed
 
     private void jlistanombresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlistanombresMouseClicked
-        if (jlistanombres.getModel().getSize()!=0) {
-             if (evt.getClickCount() == 2) {
-            new Visor((String) jlistanombres.getSelectedValue()).setVisible(true);
-        } else {
-            if (evt.getClickCount() == 1) {
-                String nameimg = (String) jlistanombres.getSelectedValue();
-                ImageIcon fot = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + nameimg);
-                Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
-                jlimgselect.setIcon(icono);
-                try {
-                    //       ImageIcon imagen = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + (String) jlistanombres.getSelectedValue());
+        if (jlistanombres.getModel().getSize() != 0) {
+            if (evt.getClickCount() == 2) {
+                new Visor((String) jlistanombres.getSelectedValue()).setVisible(true);
+            } else {
+                if (evt.getClickCount() == 1) {
+                    String nameimg = (String) jlistanombres.getSelectedValue();
+                    ImageIcon fot = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + nameimg);
+                    Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
+                    jlimgselect.setIcon(icono);
+                    try {
+                        //       ImageIcon imagen = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + (String) jlistanombres.getSelectedValue());
 
-                    this.car = new CarSnapshot("C:\\Users\\fabricio\\Desktop\\frames\\" + nameimg);
-                } catch (IOException ex) {
-                    System.out.println("ERROR AL CARGAR IMAGEN");
-                    Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                        this.car = new CarSnapshot("C:\\Users\\fabricio\\Desktop\\frames\\" + nameimg);
+                    } catch (IOException ex) {
+                        System.out.println("ERROR AL CARGAR IMAGEN");
+                        Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            }
 
+            }
         }
-        }
-       
+
     }//GEN-LAST:event_jlistanombresMouseClicked
 
     private void recognizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recognizeButtonActionPerformed
@@ -647,18 +633,6 @@ public class Principal extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitItemActionPerformed
 
-    private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutItemActionPerformed
-        //   new FrameHelp(FrameHelp.SHOW_ABOUT);
-    }//GEN-LAST:event_aboutItemActionPerformed
-
-    private void helpItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpItemActionPerformed
-        // new FrameHelp(FrameHelp.SHOW_HELP);
-    }//GEN-LAST:event_helpItemActionPerformed
-
-    private void helpMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMenuActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_helpMenuActionPerformed
-
     private void jlistanombresValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jlistanombresValueChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_jlistanombresValueChanged
@@ -670,31 +644,28 @@ public class Principal extends javax.swing.JFrame {
             this.recognitionLabel.setText(this.fileListModel.fileList.elementAt(selectedNow).recognizedPlate);
             this.selectedIndex = selectedNow;
             // proceed selectedNow
-            String path = ((FileListModel.FileListModelEntry)this.fileListModel.getElementAt(selectedNow)).fullPath;
+            String path = ((FileListModel.FileListModelEntry) this.fileListModel.getElementAt(selectedNow)).fullPath;
             //this.showImage(path);
-       //     new LoadImageThread(this,path).start();
-              ImageIcon fot = new ImageIcon(path);
-                Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
-                jlimgselect.setIcon(icono);
-                try {
-                    //       ImageIcon imagen = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + (String) jlistanombres.getSelectedValue());
+            //     new LoadImageThread(this,path).start();
+            ImageIcon fot = new ImageIcon(path);
+            Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
+            jlimgselect.setIcon(icono);
+            try {
+                //       ImageIcon imagen = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + (String) jlistanombres.getSelectedValue());
 
-                    this.car = new CarSnapshot(path);
-                } catch (IOException ex) {
-                    System.out.println("ERROR AL CARGAR IMAGEN");
-                    Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                this.car = new CarSnapshot(path);
+            } catch (IOException ex) {
+                System.out.println("ERROR AL CARGAR IMAGEN");
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_fileListValueChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem aboutItem;
     private javax.swing.JButton btniniciar;
     private javax.swing.JButton btnsalir;
     private javax.swing.JMenuItem exitItem;
     private javax.swing.JList fileList;
-    private javax.swing.JMenuItem helpItem;
-    private javax.swing.JMenu helpMenu;
     private javax.swing.JMenu imageMenu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -711,6 +682,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openDirectoryItem;
     private javax.swing.JLabel recognitionLabel;
+    private javax.swing.JLabel recognitionLabel2;
     private javax.swing.JButton recognizeButton;
     // End of variables declaration//GEN-END:variables
 }
