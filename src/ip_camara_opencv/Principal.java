@@ -1,7 +1,7 @@
 package ip_camara_opencv;
 
 import java.io.File;
-import com.sun.imageio.plugins.jpeg.JPEGImageReader;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -172,7 +172,7 @@ public class Principal extends javax.swing.JFrame {
         };
         hilo_initCamara.start();
         try {
-            Thread.sleep(3000);
+            Thread.sleep(6000);
         } catch (InterruptedException ex) {
         }
     }
@@ -358,7 +358,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel3.setText("CAPTURA SELECCIONADA");
 
         fileList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        fileList.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        fileList.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         fileList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 fileListValueChanged(evt);
