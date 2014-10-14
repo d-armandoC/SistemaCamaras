@@ -225,7 +225,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jlplaca">
       <Properties>
-        <Property name="text" type="java.lang.String" value="placa"/>
+        <Property name="text" type="java.lang.String" value="Capturas:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="recognizeButton">

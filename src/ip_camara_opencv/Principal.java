@@ -2,7 +2,6 @@ package ip_camara_opencv;
 
 import java.io.File;
 import com.sun.imageio.plugins.jpeg.JPEGImageReader;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -14,13 +13,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JDialog;
-//import javax.sound.midi.SysexMessage;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.SwingConstants;
-//import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileFilter;
 import javaanpr.Main;
 import javaanpr.gui.tools.FileListModel;
@@ -62,7 +59,6 @@ import static com.googlecode.javacv.cpp.opencv_imgproc.CV_THRESH_BINARY_INV;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_ADAPTIVE_THRESH_MEAN_C;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_RETR_CCOMP;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_CHAIN_APPROX_NONE;
-//import static com.googlecode.javacv.cpp.opencv_imgproc.CV_FILLED;
 import java.awt.Color;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvBoundingRect;
 import java.awt.BorderLayout;
@@ -77,8 +73,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
-import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.TesseractException;
+
 import org.omg.CORBA.Environment;
 
 public class Principal extends javax.swing.JFrame {
@@ -90,53 +85,41 @@ public class Principal extends javax.swing.JFrame {
     Thread hilo_initVisualizacion;
     boolean guardar;
     CvFont font;
-    Tesseract instance = Tesseract.getInstance();
+
 
     public class RecognizeThread extends Thread {
 
         Principal parentFrame = null;
 
         public RecognizeThread(Principal parentFrame) {
-
             this.parentFrame = parentFrame;
         }
 
         public void run() {
-            String recognizedText = "";
+            String recognizedText = "No se detecto ninguna placa";
             this.parentFrame.recognitionLabel.setText("processing ...");
-            // int index = this.parentFrame.selectedIndex;
             try {
                 recognizedText = Main.systemLogic.recognize(this.parentFrame.car);
             } catch (Exception ex) {
-                this.parentFrame.recognitionLabel.setText("error");
+                this.parentFrame.recognitionLabel.setText("Se ha producido un error");
                 return;
             }
             this.parentFrame.recognitionLabel.setText(recognizedText);
-            //this.parentFrame.fileListModel.fileList.elementAt(index).recognizedPlate = recognizedText;
         }
     }
 
-    public class LoadImageThread extends Thread {
-
-        Principal parentFrame = null;
-        String url = null;
-
-        public LoadImageThread(Principal parentFrame, String url) {
-            this.parentFrame = parentFrame;
-            this.url = url;
-        }
+    public class ReconocimientoRT extends Thread {
 
         public void run() {
-//            try {
-//                this.parentFrame.car = new CarSnapshot(url);
-//                this.parentFrame.panelCarContent = this.parentFrame.car.duplicate().getBi();
-//                this.parentFrame.panelCarContent = Photo.linearResizeBi(this.parentFrame.panelCarContent,
-//                        this.parentFrame.panelCar.getWidth(),
-//                        this.parentFrame.panelCar.getHeight());
-//                this.parentFrame.panelCar.paint(this.parentFrame.panelCar.getGraphics());
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
+            String recognizedText = "No se ha detectado ninguna placa";
+            recognitionLabel2.setText("processing ...");
+            try {
+                recognizedText = Main.systemLogic.recognize(new CarSnapshot(grabbedImage.getBufferedImage()));
+            } catch (Exception ex) {
+                recognitionLabel2.setText("error");
+                return;
+            }
+            recognitionLabel2.setText(recognizedText);
         }
     }
 
@@ -157,21 +140,16 @@ public class Principal extends javax.swing.JFrame {
         this.fileChooser = new JFileChooser();
         this.fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         this.fileChooser.setFileFilter(new ImageFileFilter());
-
-        // init : window dimensions and visibility
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = this.getWidth();
         int height = this.getHeight();
         this.setLocation((screenSize.width - width) / 2, (screenSize.height - height) / 2);
         this.setVisible(true);
-
         initRecursos();
         initCamara();
     }
 
     private void initRecursos() {
-
-        //jbtncapturar.setEnabled(false);
         this.setLocationRelativeTo(null);
         this.listModel = new DefaultListModel();
         this.gcHora1 = new GregorianCalendar();
@@ -184,11 +162,9 @@ public class Principal extends javax.swing.JFrame {
     private void initCamara() {
         hilo_initCamara = new Thread() {
             public void run() {
-
-                //       CvCapture capture = opencv_highgui.cvCreateCameraCapture(0);
-                CvCapture capture = opencv_highgui.cvCreateFileCapture("rtsp://admin:12345@192.168.10.150:554//Streaming/Channels/1");
-                //  opencv_highgui.cvSetCaptureProperty(capture, opencv_highgui.CV_CAP_PROP_FRAME_HEIGHT, 300);
-                // opencv_highgui.cvSetCaptureProperty(capture, opencv_highgui.CV_CAP_PROP_FRAME_WIDTH, 200);
+                // CvCapture capture = opencv_highgui.cvCreateCameraCapture(0);
+               // CvCapture capture = opencv_highgui.cvCreateFileCapture("rtsp://admin:12345@192.168.10.150:554//Streaming/Channels/1");
+                CvCapture capture = opencv_highgui.cvCreateFileCapture("rtsp://admin:12345@192.168.10.150:554//video2.mjpg");
                 grabbedImage = opencv_highgui.cvQueryFrame(capture);
                 while ((grabbedImage = opencv_highgui.cvQueryFrame(capture)) != null) {
                 }
@@ -198,9 +174,7 @@ public class Principal extends javax.swing.JFrame {
         try {
             Thread.sleep(3000);
         } catch (InterruptedException ex) {
-            // Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //  jbtncapturar.setEnabled(true);
     }
 
     private void salir() {
@@ -213,35 +187,15 @@ public class Principal extends javax.swing.JFrame {
             public void run() {
                 int tiempo = 0;
                 int numero_capturas = 0;
-                String hora, fecha;
                 while (grabbedImage != null) {
                     GregorianCalendar gcHora1 = new GregorianCalendar();
                     IplImage img_temporal = grabbedImage;
-                    hora = gcHora1.get(Calendar.HOUR) + ":" + gcHora1.get(Calendar.MINUTE) + ":" + gcHora1.get(Calendar.SECOND) + ":" + gcHora1.get(Calendar.MILLISECOND);
-                    fecha = gcHora1.get(Calendar.YEAR) + "/" + gcHora1.get(Calendar.MONTH) + "/" + gcHora1.get(Calendar.DATE);
-                    if (gcHora1.get(Calendar.AM_PM) == 0) {                                                                                      //retorno de calendar.AM_PM
-                        hora = hora + " am";
-                    } else {
-                        hora = hora + " pm";
-                    }
-
                     CvFont font1 = new CvFont(20);
                     cvInitFont(font1, 2, 6.9, 1.0, 1.3, 5, 5);
-                    //   cvPutText(img_temporal, retornaHora(), cvPoint(10, 70), font1, CvScalar.WHITE);
                     cvPutText(img_temporal, retornaFecha(), cvPoint(10, 145), font1, CvScalar.RED);
-                    ImageIcon imagen = new ImageIcon(img_temporal.getBufferedImage());
                     ImageIcon fot = new ImageIcon(img_temporal.getBufferedImage());
                     Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
                     jlimg.setIcon(icono);
-
-//                    try {
-//                        String result = instance.doOCR(img_temporal.getBufferedImage());
-//                        jlplaca.setText(result);
-//                        System.out.println(result);
-//                    } catch (TesseractException e) {
-//                        System.err.println(e.getMessage());
-//                    }
-
                     String nombre_img;
                     if (guardar == true) {
                         int tiempo_ingresado = (Integer.parseInt(jtxttiempo.getText())) * 1000;
@@ -263,18 +217,10 @@ public class Principal extends javax.swing.JFrame {
                     }
                     try {
                         Thread.sleep(25);
-                        //  jtxttiempo.setText("");
                     } catch (InterruptedException ex) {
 
                     }
-                      String   recognizedText="null";
-                    try {
-                        recognizedText = Main.systemLogic.recognize(new CarSnapshot(grabbedImage.getBufferedImage()));
-                    } catch (Exception ex) {
-                        recognitionLabel2.setText("error");
-                        return;
-                    }
-                    recognitionLabel2.setText(recognizedText);
+                    //   new ReconocimientoRT().start();
                 }
             }
         };
@@ -284,7 +230,6 @@ public class Principal extends javax.swing.JFrame {
     public String retornaHora() {
         String hora;
         GregorianCalendar gcHora1 = new GregorianCalendar();
-        IplImage img_temporal = grabbedImage;
         hora = gcHora1.get(Calendar.HOUR) + ":" + gcHora1.get(Calendar.MINUTE) + ":" + gcHora1.get(Calendar.SECOND) + ":" + gcHora1.get(Calendar.MILLISECOND);
         if (gcHora1.get(Calendar.AM_PM) == 0) {                                                                                      //retorno de calendar.AM_PM
             hora = hora + " am";
@@ -392,7 +337,7 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        jlplaca.setText("placa");
+        jlplaca.setText("Capturas:");
 
         recognizeButton.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         recognizeButton.setText("DETECTAR PLACA");
@@ -537,8 +482,6 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-   // static CvScalar min = cvScalar(0, 15, 5, 0);//BGR-A
-    //static CvScalar max = cvScalar(137, 22, 10, 0);//BGR-A
 
     private void btniniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btniniciarActionPerformed
         this.iniciarVisualizacion();
@@ -558,7 +501,6 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jbtncapturarActionPerformed
 
     private void jtxttiempoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtxttiempoActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jtxttiempoActionPerformed
 
     private void btnsalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsalirActionPerformed
@@ -576,12 +518,8 @@ public class Principal extends javax.swing.JFrame {
                     Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
                     jlimgselect.setIcon(icono);
                     try {
-                        //       ImageIcon imagen = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + (String) jlistanombres.getSelectedValue());
-
                         this.car = new CarSnapshot("C:\\Users\\fabricio\\Desktop\\frames\\" + nameimg);
                     } catch (IOException ex) {
-                        System.out.println("ERROR AL CARGAR IMAGEN");
-                        Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
 
@@ -591,42 +529,28 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jlistanombresMouseClicked
 
     private void recognizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recognizeButtonActionPerformed
-        String plate = null;
-
-        // namiesto tohto urobime thread plate = Main.systemLogic.recognize(this.car);
-        // thread code start
         new RecognizeThread(this).start();
-        // thread code end
-
-        //            this.fileListModel.fileList.elementAt(this.selectedIndex).recognizedPlate = plate;
-        //            this.label.setText(plate);
-
     }//GEN-LAST:event_recognizeButtonActionPerformed
 
     private void openDirectoryItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDirectoryItemActionPerformed
         int returnValue;
         String fileURL;
-
         this.fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         this.fileChooser.setDialogTitle("Load snapshots from directory");
         returnValue = this.fileChooser.showOpenDialog((Component) evt.getSource());
-
         if (returnValue != this.fileChooser.APPROVE_OPTION) {
             return;
         }
-
         fileURL = this.fileChooser.getSelectedFile().getAbsolutePath();
         File selectedFile = new File(fileURL);
-
         this.fileListModel = new FileListModel();
         for (String fileName : selectedFile.list()) {
             if (!ImageFileFilter.accept(fileName)) {
-                continue; // not a image
+                continue;
             }
             this.fileListModel.addFileListModelEntry(fileName, selectedFile + File.separator + fileName);
         }
         this.fileList.setModel(fileListModel);
-
     }//GEN-LAST:event_openDirectoryItemActionPerformed
 
     private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
@@ -634,29 +558,20 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_exitItemActionPerformed
 
     private void jlistanombresValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jlistanombresValueChanged
-        // TODO add your handling code here:
     }//GEN-LAST:event_jlistanombresValueChanged
 
     private void fileListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_fileListValueChanged
         int selectedNow = this.fileList.getSelectedIndex();
-
         if (selectedNow != -1 && this.selectedIndex != selectedNow) {
             this.recognitionLabel.setText(this.fileListModel.fileList.elementAt(selectedNow).recognizedPlate);
             this.selectedIndex = selectedNow;
-            // proceed selectedNow
             String path = ((FileListModel.FileListModelEntry) this.fileListModel.getElementAt(selectedNow)).fullPath;
-            //this.showImage(path);
-            //     new LoadImageThread(this,path).start();
             ImageIcon fot = new ImageIcon(path);
             Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
             jlimgselect.setIcon(icono);
             try {
-                //       ImageIcon imagen = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + (String) jlistanombres.getSelectedValue());
-
                 this.car = new CarSnapshot(path);
             } catch (IOException ex) {
-                System.out.println("ERROR AL CARGAR IMAGEN");
-                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_fileListValueChanged
