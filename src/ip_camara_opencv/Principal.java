@@ -97,16 +97,16 @@ public class Principal extends javax.swing.JFrame {
         Principal parentFrame = null;
 
         public RecognizeThread(Principal parentFrame) {
-          
+
             this.parentFrame = parentFrame;
         }
 
         public void run() {
-           String recognizedText = "";
+            String recognizedText = "";
             this.parentFrame.recognitionLabel.setText("processing ...");
-           // int index = this.parentFrame.selectedIndex;
+            // int index = this.parentFrame.selectedIndex;
             try {
-              recognizedText = Main.systemLogic.recognize(this.parentFrame.car);
+                recognizedText = Main.systemLogic.recognize(this.parentFrame.car);
             } catch (Exception ex) {
                 this.parentFrame.recognitionLabel.setText("error");
                 return;
@@ -185,8 +185,8 @@ public class Principal extends javax.swing.JFrame {
         hilo_initCamara = new Thread() {
             public void run() {
 
-                // CvCapture capture = opencv_highgui.cvCreateCameraCapture(0);
-                CvCapture capture = opencv_highgui.cvCreateFileCapture("rtsp://admin:12345@192.168.10.150:554//Streaming/Channels/1");
+                 //CvCapture capture = opencv_highgui.cvCreateCameraCapture(0);
+               CvCapture capture = opencv_highgui.cvCreateFileCapture("rtsp://admin:12345@192.168.10.150:554//Streaming/Channels/1");
                 //  opencv_highgui.cvSetCaptureProperty(capture, opencv_highgui.CV_CAP_PROP_FRAME_HEIGHT, 300);
                 // opencv_highgui.cvSetCaptureProperty(capture, opencv_highgui.CV_CAP_PROP_FRAME_WIDTH, 200);
                 grabbedImage = opencv_highgui.cvQueryFrame(capture);
@@ -333,6 +333,8 @@ public class Principal extends javax.swing.JFrame {
         jlimgselect = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        fileList = new javax.swing.JList();
         menuBar = new javax.swing.JMenuBar();
         imageMenu = new javax.swing.JMenu();
         openDirectoryItem = new javax.swing.JMenuItem();
@@ -399,13 +401,21 @@ public class Principal extends javax.swing.JFrame {
         recognitionLabel.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         recognitionLabel.setForeground(new java.awt.Color(255, 204, 51));
         recognitionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        recognitionLabel.setText("null");
         recognitionLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         recognitionLabel.setOpaque(true);
 
         jLabel2.setText("VIDEO ACTUAL");
 
         jLabel3.setText("CAPTURA SELECCIONADA");
+
+        fileList.setBackground(javax.swing.UIManager.getDefaults().getColor("Panel.background"));
+        fileList.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        fileList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                fileListValueChanged(evt);
+            }
+        });
+        jScrollPane2.setViewportView(fileList);
 
         menuBar.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
 
@@ -478,45 +488,31 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(btniniciar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jbtncapturar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlnumero_capturas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jlplaca, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jlplaca, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(recognitionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jlimg, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(38, 38, 38)
+                                .addComponent(jLabel2))
+                            .addComponent(jlimg, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(56, 56, 56)
+                                .addComponent(jLabel3))
+                            .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jlimgselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(recognitionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 257, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addGap(338, 338, 338))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(recognizeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                                .addComponent(jlimgselect, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(recognizeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jlimg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jlimgselect, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(recognitionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(recognizeButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addComponent(btniniciar)
@@ -531,10 +527,25 @@ public class Principal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jlplaca, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jlimg, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jlimgselect, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(13, 13, 13)
+                        .addComponent(recognitionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(recognizeButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlnumero_capturas, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -569,19 +580,19 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnsalirActionPerformed
 
     private void jlistanombresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlistanombresMouseClicked
-        if (evt.getClickCount() == 2) {
+        if (jlistanombres.getModel().getSize()!=0) {
+             if (evt.getClickCount() == 2) {
             new Visor((String) jlistanombres.getSelectedValue()).setVisible(true);
         } else {
             if (evt.getClickCount() == 1) {
-                String nameimg=(String) jlistanombres.getSelectedValue();
-                System.out.println(nameimg);
-              ImageIcon fot = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" +nameimg );
-                    Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
-                    jlimgselect.setIcon(icono);
+                String nameimg = (String) jlistanombres.getSelectedValue();
+                ImageIcon fot = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + nameimg);
+                Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
+                jlimgselect.setIcon(icono);
                 try {
                     //       ImageIcon imagen = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + (String) jlistanombres.getSelectedValue());
-                   
-                    this.car = new CarSnapshot("C:\\Users\\fabricio\\Desktop\\frames\\" +nameimg);
+
+                    this.car = new CarSnapshot("C:\\Users\\fabricio\\Desktop\\frames\\" + nameimg);
                 } catch (IOException ex) {
                     System.out.println("ERROR AL CARGAR IMAGEN");
                     Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
@@ -589,6 +600,8 @@ public class Principal extends javax.swing.JFrame {
             }
 
         }
+        }
+       
     }//GEN-LAST:event_jlistanombresMouseClicked
 
     private void recognizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recognizeButtonActionPerformed
@@ -626,8 +639,7 @@ public class Principal extends javax.swing.JFrame {
             }
             this.fileListModel.addFileListModelEntry(fileName, selectedFile + File.separator + fileName);
         }
-        this.jlistanombres.setModel(fileListModel);
-      //  this.fileList.setModel(fileListModel);
+        this.fileList.setModel(fileListModel);
 
     }//GEN-LAST:event_openDirectoryItemActionPerformed
 
@@ -651,11 +663,36 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jlistanombresValueChanged
 
+    private void fileListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_fileListValueChanged
+        int selectedNow = this.fileList.getSelectedIndex();
+
+        if (selectedNow != -1 && this.selectedIndex != selectedNow) {
+            this.recognitionLabel.setText(this.fileListModel.fileList.elementAt(selectedNow).recognizedPlate);
+            this.selectedIndex = selectedNow;
+            // proceed selectedNow
+            String path = ((FileListModel.FileListModelEntry)this.fileListModel.getElementAt(selectedNow)).fullPath;
+            //this.showImage(path);
+       //     new LoadImageThread(this,path).start();
+              ImageIcon fot = new ImageIcon(path);
+                Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
+                jlimgselect.setIcon(icono);
+                try {
+                    //       ImageIcon imagen = new ImageIcon("C:\\Users\\fabricio\\Desktop\\frames\\" + (String) jlistanombres.getSelectedValue());
+
+                    this.car = new CarSnapshot(path);
+                } catch (IOException ex) {
+                    System.out.println("ERROR AL CARGAR IMAGEN");
+                    Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        }
+    }//GEN-LAST:event_fileListValueChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutItem;
     private javax.swing.JButton btniniciar;
     private javax.swing.JButton btnsalir;
     private javax.swing.JMenuItem exitItem;
+    private javax.swing.JList fileList;
     private javax.swing.JMenuItem helpItem;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenu imageMenu;
@@ -663,6 +700,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton jbtncapturar;
     private javax.swing.JLabel jlimg;
     private javax.swing.JLabel jlimgselect;
