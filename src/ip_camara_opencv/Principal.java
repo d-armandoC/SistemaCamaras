@@ -73,7 +73,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
-
 import org.omg.CORBA.Environment;
 
 public class Principal extends javax.swing.JFrame {
@@ -85,7 +84,6 @@ public class Principal extends javax.swing.JFrame {
     Thread hilo_initVisualizacion;
     boolean guardar;
     CvFont font;
-
 
     public class RecognizeThread extends Thread {
 
@@ -109,7 +107,6 @@ public class Principal extends javax.swing.JFrame {
     }
 
     public class ReconocimientoRT extends Thread {
-
         public void run() {
             String recognizedText = "No se ha detectado ninguna placa";
             recognitionLabel2.setText("processing ...");
@@ -122,10 +119,8 @@ public class Principal extends javax.swing.JFrame {
             recognitionLabel2.setText(recognizedText);
         }
     }
-
     CarSnapshot car;
     BufferedImage panelCarContent;
-
     JFileChooser fileChooser;
     private FileListModel fileListModel;
     int selectedIndex = -1;
@@ -162,7 +157,7 @@ public class Principal extends javax.swing.JFrame {
     private void initCamara() {
         hilo_initCamara = new Thread() {
             public void run() {
-                // CvCapture capture = opencv_highgui.cvCreateCameraCapture(0);
+               //  CvCapture capture = opencv_highgui.cvCreateCameraCapture(0);
                // CvCapture capture = opencv_highgui.cvCreateFileCapture("rtsp://admin:12345@192.168.10.150:554//Streaming/Channels/1");
                 CvCapture capture = opencv_highgui.cvCreateFileCapture("rtsp://admin:12345@192.168.10.150:554//video2.mjpg");
                 grabbedImage = opencv_highgui.cvQueryFrame(capture);
@@ -183,16 +178,14 @@ public class Principal extends javax.swing.JFrame {
 
     private void iniciarVisualizacion() {
         hilo_initVisualizacion = new Thread() {
-
             public void run() {
                 int tiempo = 0;
                 int numero_capturas = 0;
                 while (grabbedImage != null) {
-                    GregorianCalendar gcHora1 = new GregorianCalendar();
                     IplImage img_temporal = grabbedImage;
                     CvFont font1 = new CvFont(20);
                     cvInitFont(font1, 2, 6.9, 1.0, 1.3, 5, 5);
-                    cvPutText(img_temporal, retornaFecha(), cvPoint(10, 145), font1, CvScalar.RED);
+                    cvPutText(img_temporal, retornaFecha(), cvPoint(100, 145), font1, CvScalar.RED);
                     ImageIcon fot = new ImageIcon(img_temporal.getBufferedImage());
                     Icon icono = new ImageIcon(fot.getImage().getScaledInstance(jlimg.getWidth(), jlimg.getHeight(), Image.SCALE_DEFAULT));
                     jlimg.setIcon(icono);
@@ -201,7 +194,7 @@ public class Principal extends javax.swing.JFrame {
                         int tiempo_ingresado = (Integer.parseInt(jtxttiempo.getText())) * 1000;
                         if (tiempo < tiempo_ingresado) {
                             nombre_img = asignaNombreImg();
-                            cvSaveImage("C:\\Users\\fabricio\\Desktop\\frames\\" + nombre_img, grabbedImage);
+                            cvSaveImage("C:\\Users\\fabricio\\Desktop\\frames\\" + nombre_img, img_temporal);
                             listModel.addElement(nombre_img);
                             jlistanombres.setModel(listModel);
                             tiempo = tiempo + 25;
@@ -211,16 +204,13 @@ public class Principal extends javax.swing.JFrame {
                             tiempo = 0;
                             guardar = false;
                             jbtncapturar.setEnabled(true);
-
                             numero_capturas = 0;
                         }
                     }
                     try {
-                        Thread.sleep(25);
-                    } catch (InterruptedException ex) {
-
-                    }
-                    //   new ReconocimientoRT().start();
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {  }
+                    new ReconocimientoRT().start();
                 }
             }
         };
@@ -281,13 +271,13 @@ public class Principal extends javax.swing.JFrame {
         jlplaca = new javax.swing.JLabel();
         recognizeButton = new javax.swing.JButton();
         recognitionLabel = new javax.swing.JLabel();
-        jlimg = new javax.swing.JLabel();
-        jlimgselect = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         fileList = new javax.swing.JList();
         recognitionLabel2 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jlimg = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jlimgselect = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         imageMenu = new javax.swing.JMenu();
         openDirectoryItem = new javax.swing.JMenuItem();
@@ -353,10 +343,6 @@ public class Principal extends javax.swing.JFrame {
         recognitionLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         recognitionLabel.setOpaque(true);
 
-        jLabel2.setText("VIDEO ACTUAL");
-
-        jLabel3.setText("CAPTURA SELECCIONADA");
-
         fileList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         fileList.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         fileList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -370,6 +356,43 @@ public class Principal extends javax.swing.JFrame {
         recognitionLabel2.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         recognitionLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         recognitionLabel2.setOpaque(true);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Video actual"));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jlimg, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jlimg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Captura seleccionada"));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jlimgselect, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jlimgselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         menuBar.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
 
@@ -418,32 +441,36 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(38, 38, 38)
-                                .addComponent(jLabel2))
-                            .addComponent(jlimg, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(56, 56, 56)
-                                .addComponent(jLabel3))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jlimgselect, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(recognizeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(recognitionLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(recognitionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(13, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(recognitionLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addGap(20, 20, 20))
+                            .addComponent(recognitionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(13, 13, 13))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(13, 13, 13)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(recognitionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                            .addComponent(recognitionLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(recognizeButton)
+                        .addGap(7, 7, 7))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
                         .addComponent(btniniciar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbtncapturar)
@@ -458,22 +485,7 @@ public class Principal extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jlimg, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jlimgselect, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(13, 13, 13)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(recognitionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
-                            .addComponent(recognitionLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addComponent(recognizeButton)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlnumero_capturas, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -583,8 +595,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JList fileList;
     private javax.swing.JMenu imageMenu;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton jbtncapturar;
