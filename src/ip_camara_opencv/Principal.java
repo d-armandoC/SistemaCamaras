@@ -497,7 +497,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void btniniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btniniciarActionPerformed
         this.iniciarVisualizacion();
-        btniniciar.setEnabled(false);
+    //    btniniciar.setEnabled(false);
         jbtncapturar.setEnabled(true);
     }//GEN-LAST:event_btniniciarActionPerformed
     private void jbtncapturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtncapturarActionPerformed
